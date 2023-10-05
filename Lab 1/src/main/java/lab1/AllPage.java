@@ -1,8 +1,8 @@
 package lab1;
 public class AllPage {
-    public Query query;
+    private Query query;
 
-    public Query getAllPage(){
+    public Query GetAllPage(){
         return query;
     }
 }

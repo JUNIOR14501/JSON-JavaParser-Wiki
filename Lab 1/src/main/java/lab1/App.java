@@ -22,7 +22,7 @@ public class App {
     public static void main(String arg[]){
         Scanner in = new Scanner(System.in, "UTF-8");
         String urlAricle = GetURL(in);
-        String jsonStr = getJsonString(urlAricle);
+        String jsonStr = GetJsonString(urlAricle);
         AllPage allPage = ConvertToClass(jsonStr);
         int selectedPoint = Menu(allPage, in);
         Desktop(allPage, selectedPoint);
@@ -37,16 +37,16 @@ public class App {
 
         //System.out.printf(nameArticle);
 
-        nameArticle = encodeValue(nameArticle);
+        nameArticle = EncodeValue(nameArticle);
         String urlAricle = "https://en.wikipedia.org/w/api.php?action=query&list=search&utf8=&format=json&srsearch=\"" + nameArticle + "\"";
         return urlAricle;
     }
 
-    public static String encodeValue(String value) {
+    public static String EncodeValue(String value) {
         return URLEncoder.encode(value, StandardCharsets.UTF_8);
     }
     
-    public static String getJsonString(String oldUrl){
+    public static String GetJsonString(String oldUrl){
         try {
             URL url = new URL(oldUrl);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -90,14 +90,15 @@ public class App {
     }
 
     public static int Menu(AllPage allPage, Scanner in){
-        if (allPage.query.search.size() == 0){
+        Query query = allPage.GetAllPage();
+        if (query.search.size() == 0){
             throw new NullPointerException("There are no pages with a private name");
         }
-        for (int i = 0; i < allPage.query.search.size(); i++){
+        for (int i = 0; i < query.search.size(); i++){
             System.out.println("№ " + i); 
-            System.out.println("Name of article: " + allPage.query.search.get(i).title);
-            System.out.println("ID Page: " + allPage.query.search.get(i).pageid);
-            System.out.println("Word count: " + allPage.query.search.get(i).wordcount + "\n");
+            System.out.println("Name of article: " + query.search.get(i).title);
+            System.out.println("ID Page: " + query.search.get(i).pageid);
+            System.out.println("Word count: " + query.search.get(i).wordcount + "\n");
             
         }
 
@@ -109,7 +110,8 @@ public class App {
 
     public static void Desktop(AllPage allPage, int selectedPoint){
         try {
-            int pageid = allPage.query.search.get(selectedPoint).pageid;
+            Query query = allPage.GetAllPage();
+            int pageid = query.search.get(selectedPoint).pageid;
 
             URI uri = new URI("https://en.wikipedia.org/w/index.php?curid=" + pageid);
             Desktop desktop = null;
